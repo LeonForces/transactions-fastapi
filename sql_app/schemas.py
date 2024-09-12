@@ -2,9 +2,9 @@ from pydantic import BaseModel
 
 
 class TransactionBase(BaseModel):
-    from_user_id: int
-    to_user_id: int
-    amount: int
+    from_currency: str
+    to_currency: str
+    amount: float
 
 
 class TransactionCreate(TransactionBase):
@@ -12,14 +12,18 @@ class TransactionCreate(TransactionBase):
 
 
 class Transaction(TransactionBase):
-
+    rate: float
+    user_id: int
     class Config:
         orm_mode = True
 
 
+class Balance(BaseModel):
+    currency_name: str
+    amount: float
+
 class UserBase(BaseModel):
     name: str
-    balance: int
 
 
 class UserCreate(UserBase):
@@ -28,7 +32,8 @@ class UserCreate(UserBase):
 
 class User(UserBase):
     id: int
-    items: list[Transaction] = []
+    balance: list[Balance]
+    transactions: list[Transaction] = []
 
     class Config:
         orm_mode = True
