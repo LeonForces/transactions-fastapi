@@ -51,6 +51,8 @@ def create_user_transaction(
 
     from_balance = crud.get_user_balance(db, user_id=user_id, from_currency=transaction.from_currency)
     to_balance = crud.get_user_balance(db, user_id=user_id, from_currency=transaction.to_currency)
+    if from_balance.currency_name == to_balance.currency_name:
+        raise HTTPException(status_code=404, detail="The balances match")
     if from_balance is None or to_balance is None:
         raise HTTPException(status_code=404, detail="User balance not found")
     if from_balance.amount < transaction.amount:
