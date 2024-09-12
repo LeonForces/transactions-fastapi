@@ -5,6 +5,8 @@ from . import models, schemas
 from urllib.request import urlopen
 import xml.etree.ElementTree as ET
 
+from sqlalchemy import func
+
 
 def get_rate(from_currency: str, to_currency: str):
     with urlopen('https://www.cbr.ru/scripts/XML_daily.asp') as f:
@@ -96,10 +98,10 @@ def get_user_transactions(db: Session, user_id: int, skip: int = 0, limit: int =
     return db.query(models.Transaction).filter(models.Transaction.user_id == user_id).offset(skip).limit(limit).all()
 
 
-"""def get_user_debit(db: Session, user_id: int):
-    return db.query(func.sum(models.Transaction.amount)).filter(models.Transaction.to_user_id == user_id).scalar()
+def get_user_debit(db: Session, user_id: int, to_currency: str):
+    return db.query(func.sum(models.Transaction.amount)).where(models.Transaction.user_id == user_id, models.Transaction.to_currency == to_currency).scalar()
 
 
-def get_user_credit(db: Session, user_id: int):
-    return db.query(func.sum(models.Transaction.amount)).filter(models.Transaction.from_user_id == user_id).scalar()"""
+def get_user_credit(db: Session, user_id: int, from_currency: str):
+    return db.query(func.sum(models.Transaction.amount)).where(models.Transaction.user_id == user_id, models.Transaction.from_currency == from_currency).scalar()
 
