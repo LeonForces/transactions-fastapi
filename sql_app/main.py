@@ -99,7 +99,7 @@ def read_user_balance(user_id: int, db: Session = Depends(get_db)):
     return db_user.balance
 
 
-@app.get("/invoice/{user_id}/{to_currency}", response_model=int)
+@app.get("/invoice/{user_id}/{to_currency}", response_model=float)
 def read_user_debit(user_id: int, to_currency: str, db: Session = Depends(get_db)):
     db_user = crud.get_user(db, user_id=user_id)
     if db_user is None:
@@ -112,7 +112,7 @@ def read_user_debit(user_id: int, to_currency: str, db: Session = Depends(get_db
     return debit
 
 
-@app.get("/withdraw/{user_id}/{from_currency}", response_model=int)
+@app.get("/withdraw/{user_id}/{from_currency}", response_model=float)
 def read_user_credit(user_id: int, from_currency: str, db: Session = Depends(get_db)):
     db_user = crud.get_user(db, user_id=user_id)
     if db_user is None:
